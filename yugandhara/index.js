@@ -1,34 +1,13 @@
 let express = require('express')
 
-
+let bcrypt = require('bcryptjs')
 let app = express()
 app.use(express.json())
-require('./conn')
-let User = require('./userModel')
+require('./config/conn')
+let User = require('./models/userModel')
+let userRouter = require('./routes/userRoutes')
+app.use('/user', userRouter)
 
-app.post('/register', async (req, res) => {
-    let existingUSer = await User.findOne({ email: req.body.email })
-
-    if (existingUSer) {
-        res.send('user already exists')
-    } else {
-        let newUser = User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password
-        })
-
-
-        let user = await newUser.save()
-
-        res.send('user registered successfully')
-
-    }
-
-
-
-
-})
 
 app.post('/login', async (req, res) => {
 
@@ -38,7 +17,9 @@ app.post('/login', async (req, res) => {
         if (!user) throw 'invalid email id '
 
 
-        if (user.password != req.body.password) throw ' incorrect password'
+        let isValidPassword = await bcrypt.compare(req.body.password, user.password)
+        if (!isValidPassword) throw 'invalid password '
+
 
         res.send({
             message: 'login successful',
@@ -53,7 +34,6 @@ app.post('/login', async (req, res) => {
     }
 
 })
-
 
 app.get('/users', async (req, res) => {
     let users = await User.find()
