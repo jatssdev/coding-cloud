@@ -30,7 +30,27 @@ let userRegister = async (req, res) => {
 }
 
 
+let userLogin = async (req, res) => {
+    try {
+        let { email, password } = req.body
+        // let user = await User.findOne({ email }).select('-name') ---> remove perticular key from data 
+        let user = await User.findOne({ email })
+        if (!user) throw 'Invalid Email Address!'
+        let isValid = await bcrypt.compare(password, user.password)
+        if (!isValid) throw 'Invalid Password'
+        let newUserWithoutPassword = user.toObject()
+        delete newUserWithoutPassword.password
+        res.send({
+            message: 'Login Successfull',
+            success: true,
+            user: newUserWithoutPassword
+        })
+    } catch (e) {
+        res.send({ success: false, message: e })
+    }
+}
 
 
 
-module.exports = { userRegister }
+
+module.exports = { userRegister, userLogin }
