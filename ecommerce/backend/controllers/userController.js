@@ -29,7 +29,6 @@ let userRegister = async (req, res) => {
     }
 }
 
-
 let userLogin = async (req, res) => {
     try {
         let { email, password } = req.body

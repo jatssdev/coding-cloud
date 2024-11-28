@@ -1,19 +1,15 @@
 let express = require('express')
 let cors = require('cors')
 let userRoutes = require('./routes/userRoutes')
-
+let productRoutes = require('./routes/productRoute')
+let cartRouter = require('./routes/cartRoute')
 let app = express()
 app.use(express.json())
 app.use(cors())
 app.use('/api/user', userRoutes)
+app.use('/api/admin', productRoutes)
+app.use('/api/admin', cartRouter)
 require('./config/conn')
-
-
-
-
-
-
-
 app.listen(9000, () => {
     console.log('app is runnig on 9000')
 })
