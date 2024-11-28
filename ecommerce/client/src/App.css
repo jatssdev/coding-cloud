@@ -3,3 +3,16 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+.wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
+  grid-template-rows: 300px;
+  padding: 50px;
+}
+
+.wrapper .product {
+  padding: 15px;
+  box-shadow: 0 3px 10px rgb(226, 226, 226);
+}

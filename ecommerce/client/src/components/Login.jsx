@@ -62,12 +62,13 @@ const Login = () => {
         try {
             let response = await axios.post('http://localhost:9000/api/user/login', user)
             if (response.data.success) {
-                getUserData(response.data.user)
                 Swal.fire({
                     title: "Success!",
                     text: response.data.message,
                     icon: "success"
                 }).then(() => {
+                    localStorage.setItem('user', JSON.stringify(response.data.user))
+                    getUserData()
                     navigate('/')
                 })
 

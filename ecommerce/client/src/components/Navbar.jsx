@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import { mainContext } from '../App';
 
 const Navbar = () => {
     const navStyle = {
@@ -19,16 +20,32 @@ const Navbar = () => {
         fontSize: '18px',
         fontWeight: '500',
     };
+    let imgStyle = {
+        width: '50px',
+        height: '50px',
+        borderRadius: '50%'
+    }
+    let { loginUser, logoutHandler } = useContext(mainContext)
 
     return (
         <nav style={navStyle}>
-            <h2 style={{ margin: 0, color: '#ffffff' }}>ReactApp</h2>
+            {
+                loginUser ? <img style={imgStyle} src={loginUser.profile} alt="" /> : <h2 style={{ margin: 0, color: '#ffffff' }}>Ecommerce</h2>
+            }
+
             <div>
                 <Link to="/" style={linkStyle}>Home</Link>
-                <Link to="/register" style={linkStyle}>Register</Link>
-                <Link to="/login" style={linkStyle}>Login</Link>
+
+                {
+                    loginUser ? <button onClick={logoutHandler}>logout</button> : <>
+
+                        <Link to="/register" style={linkStyle}>Register</Link>
+                        <Link to="/login" style={linkStyle}>Login</Link></>
+                }
+
+
             </div>
-        </nav>
+        </nav >
     );
 };
 

@@ -1,31 +1,42 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { mainContext } from '../App';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Home = () => {
+    let [products, setProducts] = useState([])
     let { loginUser } = useContext(mainContext)
-    const homeStyle = {
-        textAlign: 'center',
-        padding: '40px',
-        color: '#ffffff',
-        backgroundColor: '#1e1e2f',
-        height: '100vh',
-    };
 
-    const headingStyle = {
-        fontSize: '3rem',
-        marginBottom: '20px',
-        color: '#4caf50',
-    };
+    let getAllProducts = async () => {
+        let response = await axios.get('http://localhost:9000/api/admin/products')
 
-    const paragraphStyle = {
-        fontSize: '1.2rem',
-    };
+        setProducts(response.data.products)
+    }
+    useEffect(() => {
+        getAllProducts()
+    }, [])
+    let AddToCartHandler = async (productId) => {
+        let response = await axios.post('http://localhost:9000/api/admin/cart', { userId: loginUser._id, productId })
+        Swal.fire('Success', response.data.message, 'success')
+
+    }
 
     return (
-        <div style={homeStyle}>
-            <h1 style={headingStyle}>Welcome {loginUser ? loginUser.name : 'user'}</h1>
-            <p style={paragraphStyle}>This is the Home page of your application.</p>
-        </div>
+        <div className='home'>
+            <div className="wrapper">
+                {
+                    products.map((product, index) => {
+                        return <div className="product">
+                            <img src={product.images[0]} alt="" />
+                            <h2>{product.title}</h2>
+                            <h3><del>₹{product.price}</del> <span>₹{(product.price / 100) * (100 - product.discount)}</span></h3>
+                            <p>{product.description}</p>
+                            <button onClick={() => AddToCartHandler(product._id)}>Add To Cart</button>
+                        </div>
+                    })
+                }
+            </div>
+        </div >
     );
 };
 
